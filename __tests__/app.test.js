@@ -3,6 +3,7 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const GithubUser = require('../lib/models/GithubUser');
+const UserService = require('../lib/services/UserService');
 
 //jest.mock('../lib/utils/github');
 jest.mock('../lib/middleware/authenticate.js', () => {
@@ -59,6 +60,16 @@ describe('Gitty2 routes', () => {
           username: 'wally',
         });
       });
+  });
+
+  it('logout a user', async () => {
+    await GithubUser.insert({
+      username: 'wally',
+      photoUrl: 'http://image.com/image.png',
+    });
+    const res = await request(app)
+      .delete('/api/v1/github/sessions').send();
+    expect(res.body).toEqual({ success: true, message: 'Signed Out' });
   });
 
 });
