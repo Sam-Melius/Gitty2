@@ -2,8 +2,18 @@ const pool = require('../lib/utils/pool');
 const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
+const GithubUser = require('../lib/models/GithubUser');
 
-jest.mock('../lib/utils/github');
+//jest.mock('../lib/utils/github');
+jest.mock('../lib/middleware/authenticate.js', () => {
+  return (req, res, next) => {
+    req.user = {
+      username: 'wally',
+      photoUrl: 'http://image.com/image.png',
+    };
+    next();
+  };
+});
 
 describe('Gitty2 routes', () => {
   beforeEach(() => {
@@ -31,6 +41,24 @@ describe('Gitty2 routes', () => {
       .redirects(1);
 
     expect(res.req.path).toEqual('/api/v1/posts');
+  });
+
+  it('creates a post', async () => {
+    await GithubUser.insert({
+      username: 'wally',
+      photoUrl: 'http://image.com/image.png',
+    });
+
+    return request(app)
+      .post('/api/v1/posts')
+      .send({ text: 'I am the coolest flash' })
+      .then((res) => {
+        expect(res.body).toEqual({
+          id: '1',
+          text: 'I am the coolest flash',
+          username: 'wally',
+        });
+      });
   });
 
 });
