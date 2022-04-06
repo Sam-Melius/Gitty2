@@ -27,7 +27,7 @@ describe('Gitty2 routes', () => {
   it('should login and redirect users to /api/v1/posts', async () => {
     const res = await request
       .agent(app)
-      .get('/api/v1/github/login/callback?code=42')
+      .get('/api/v1/posts')
       .redirects(1);
 
     expect(res.req.path).toEqual('/api/v1/posts');
