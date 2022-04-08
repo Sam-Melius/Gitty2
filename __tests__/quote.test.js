@@ -36,7 +36,7 @@ describe('Gitty2 routes', () => {
       }
     ];
     const req = await request(app)
-      .get('/api/v1/quotes/quotes');
+      .get('/api/v1/quotes');
 
     expect(req.body).toEqual(expected);
   });
