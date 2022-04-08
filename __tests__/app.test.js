@@ -64,7 +64,7 @@ describe('Gitty2 routes', () => {
       .send({ text: 'I am the coolest flash' })
       .then((res) => {
         expect(res.body).toEqual({
-          id: '1',
+          id: expect.any(String),
           text: 'I am the coolest flash',
           username: 'wally',
         });
